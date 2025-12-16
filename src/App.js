@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import ProductCard from "./components/productCard";
 
-function App() {
+const App = () => {
+  const [products, setProducts] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("https://fakestoreapi.com/products");
+      console.log(response, "response");
+      setProducts(response.data ?? []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          name={product.title}
+          price={product.price}
+          description={product.description}
+          category={product.category}
+        />
+      ))}
     </div>
   );
-}
+};
 
 export default App;
